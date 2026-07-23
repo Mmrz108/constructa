@@ -88,7 +88,24 @@ export const project = pgTable("project", {
   startDate: date("startDate"),
   endDate: date("endDate"),
   description: text("description"),
+  contractor: text("contractor"),
+  consultant: text("consultant"),
+  handoverDate: date("handoverDate"),
+  progressPlanned: integer("progressPlanned").notNull().default(0),
+  progressActual: integer("progressActual").notNull().default(0),
+  imageUrl: text("imageUrl"),
   createdAt: timestamp("createdAt").notNull().defaultNow(),
+})
+
+export const progressSnapshot = pgTable("progress_snapshot", {
+  id: serial("id").primaryKey(),
+  orgId: integer("orgId").notNull(),
+  projectId: integer("projectId").notNull(),
+  userId: text("userId").notNull(),
+  label: text("label").notNull(),
+  planned: integer("planned").notNull().default(0),
+  actual: integer("actual").notNull().default(0),
+  sortOrder: integer("sortOrder").notNull().default(0),
 })
 
 export const inspection = pgTable("inspection", {

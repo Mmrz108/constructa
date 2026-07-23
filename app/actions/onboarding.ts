@@ -8,6 +8,7 @@ import {
   inspection,
   ncr,
   defect,
+  progressSnapshot,
 } from "@/lib/db/schema"
 import { getUserId } from "@/lib/session"
 import { eq } from "drizzle-orm"
@@ -48,12 +49,41 @@ export async function createOrganization(formData: FormData) {
       userId,
       name: seedProjectName,
       code: "PRJ-001",
-      client: "Demo Client",
-      location: "Site A",
+      client: "Al Noor Holdings",
+      location: "Dubai, UAE",
       status: "active",
+      contractor: "Atlas Contracting",
+      consultant: "BuildSight Consulting",
+      handoverDate: "2026-12-18",
+      progressPlanned: 72,
+      progressActual: 68,
+      imageUrl: "/images/project-hero.png",
       description: "Auto-generated starter project. Edit or delete anytime.",
     })
     .returning({ id: project.id })
+
+  const progressWeeks: [string, number, number][] = [
+    ["Mar 17", 22, 20],
+    ["Mar 24", 30, 26],
+    ["Mar 31", 38, 33],
+    ["Apr 7", 46, 41],
+    ["Apr 14", 53, 48],
+    ["Apr 21", 60, 54],
+    ["Apr 28", 66, 60],
+    ["May 5", 69, 64],
+    ["May 12", 72, 68],
+  ]
+  await db.insert(progressSnapshot).values(
+    progressWeeks.map(([label, planned, actual], idx) => ({
+      orgId: org.id,
+      projectId: proj.id,
+      userId,
+      label,
+      planned,
+      actual,
+      sortOrder: idx,
+    })),
+  )
 
   await db.insert(inspection).values([
     {
