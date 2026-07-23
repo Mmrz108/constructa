@@ -1,0 +1,51 @@
+﻿[
+    {
+        "id":  46,
+        "name":  "Earthwork Excavation",
+        "questions":  [
+                          "Approved drawings available at site",
+                          "Benchmarks and reference levels identified",
+                          "Excavation depth as per approved drawings",
+                          "Excavation width and length as per foundation size",
+                          "Excavation sides stable (no loose soil)",
+                          "Bottom level properly trimmed and leveled",
+                          "Formation level approved before PCC",
+                          "Work ready for next activity (PCC / footing works)"
+                      ]
+    },
+    {
+        "id":  47,
+        "name":  "Foundation steel fabrication and formwork",
+        "questions":  [
+                          "Approved drawings available at site"
+                      ]
+    },
+    {
+        "id":  48,
+        "name":  "Ground floor columns",
+        "questions":  [
+                          "Approved drawings available at site"
+                      ]
+    },
+    {
+        "id":  49,
+        "name":  "Plinth beams",
+        "questions":  [
+
+                      ]
+    },
+    {
+        "id":  50,
+        "name":  "gf slab",
+        "questions":  [
+
+                      ]
+    },
+    {
+        "id":  51,
+        "name":  "FF slab",
+        "questions":  [
+
+                      ]
+    }
+]

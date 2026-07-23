@@ -1,0 +1,181 @@
+﻿[
+    {
+        "type":  "client",
+        "id":  "664",
+        "name":  "NAJEEB AL AJMI",
+        "email":  "alajmi@test.com",
+        "since":  "16 Jun 26"
+    },
+    {
+        "type":  "client",
+        "id":  "655",
+        "name":  "jothis",
+        "email":  "asffmij@test.com",
+        "since":  "01 Jun 26"
+    },
+    {
+        "type":  "client",
+        "id":  "647",
+        "name":  "MR. MOHAMMED ALI MOHAMMED AL KALBANI",
+        "email":  "BONYAN_2025-117@gmail.com",
+        "since":  "23 Jan 26"
+    },
+    {
+        "type":  "client",
+        "id":  "648",
+        "name":  "MR. MAHMOOD RASHID MOHAMMED AL RIYAMI",
+        "email":  "BONYAN_2025-180@gmail.com",
+        "since":  "25 Jan 26"
+    },
+    {
+        "type":  "client",
+        "id":  "645",
+        "name":  "MR. HAMED KHALFAN MOHAMED AL AMRI",
+        "email":  "BONYAN_2026-001@gmail.com",
+        "since":  "10 Jan 26"
+    },
+    {
+        "type":  "client",
+        "id":  "649",
+        "name":  "Mr. Abdullah Al Balushi",
+        "email":  "BONYAN_2026-035@gmail.com",
+        "since":  "11 Apr 26"
+    },
+    {
+        "type":  "client",
+        "id":  "659",
+        "name":  "ismail",
+        "email":  "ismail@test.com",
+        "since":  "04 Jun 26"
+    },
+    {
+        "type":  "client",
+        "id":  "669",
+        "name":  "mohammad",
+        "email":  "mdnajsdh@gmail.com",
+        "since":  "22 Jul 26"
+    },
+    {
+        "type":  "client",
+        "id":  "662",
+        "name":  "ster",
+        "email":  "ster@test.com",
+        "since":  "09 Jun 26"
+    },
+    {
+        "type":  "client",
+        "id":  "667",
+        "name":  "talal al salmi",
+        "email":  "talal@test.com",
+        "since":  "05 Jul 26"
+    },
+    {
+        "type":  "contractor",
+        "id":  "666",
+        "name":  "ERJUAN QURAYAT TRADING",
+        "email":  "abdullahessa84@gmail.com",
+        "since":  "16 Jun 26"
+    },
+    {
+        "type":  "contractor",
+        "id":  "650",
+        "name":  "thdtysres",
+        "email":  "asffmin@test.com",
+        "since":  "20 May 26"
+    },
+    {
+        "type":  "contractor",
+        "id":  "657",
+        "name":  "DREAM VILLA",
+        "email":  "asfgdtj@test.com",
+        "since":  "01 Jun 26"
+    },
+    {
+        "type":  "contractor",
+        "id":  "652",
+        "name":  "Najam ur rehman",
+        "email":  "cnt88@gmail.com",
+        "since":  "31 May 26"
+    },
+    {
+        "type":  "contractor",
+        "id":  "654",
+        "name":  "gsdfg",
+        "email":  "fsadf@test.com",
+        "since":  "31 May 26"
+    },
+    {
+        "type":  "contractor",
+        "id":  "668",
+        "name":  "integrated plans",
+        "email":  "integrated@test.com",
+        "since":  "05 Jul 26"
+    },
+    {
+        "type":  "contractor",
+        "id":  "661",
+        "name":  "ismail",
+        "email":  "ismail2@test.com",
+        "since":  "04 Jun 26"
+    },
+    {
+        "type":  "contractor",
+        "id":  "646",
+        "name":  "DREAM VILLA",
+        "email":  "none@gmail.com",
+        "since":  "10 Jan 26"
+    },
+    {
+        "type":  "supervisor",
+        "id":  "656",
+        "name":  "ahmed",
+        "email":  "asffghj@test.com",
+        "since":  "01 Jun 26"
+    },
+    {
+        "type":  "supervisor",
+        "id":  "660",
+        "name":  "ismail",
+        "email":  "ismail1@test.com",
+        "since":  "04 Jun 26",
+        "refCode":  "CII845"
+    },
+    {
+        "type":  "supervisor",
+        "id":  "653",
+        "name":  "jothis",
+        "email":  "jothis@test.com",
+        "since":  "31 May 26"
+    },
+    {
+        "type":  "supervisor",
+        "id":  "651",
+        "name":  "Najam ur rehman",
+        "email":  "nsn18061@gmail.com",
+        "since":  "31 May 26",
+        "phone":  "",
+        "refCode":  "CYF871"
+    },
+    {
+        "type":  "supervisor",
+        "id":  "665",
+        "name":  "rajesh",
+        "email":  "rajesh@test.com",
+        "since":  "16 Jun 26"
+    },
+    {
+        "type":  "supervisor",
+        "id":  "663",
+        "name":  "sterr",
+        "email":  "sterr@test.com",
+        "since":  "09 Jun 26"
+    },
+    {
+        "type":  "supervisor",
+        "id":  "658",
+        "name":  "sgsehd",
+        "email":  "tgwtgaawr@test.com",
+        "since":  "03 Jun 26",
+        "refCode":  "EL3661"
+    }
+]
