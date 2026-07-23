@@ -1,6 +1,6 @@
 "use client"
 
-import { createInspection } from "@/app/actions/inspections"
+import { createDefect } from "@/app/actions/defects"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -27,7 +27,7 @@ import { toast } from "sonner"
 
 type ProjectOption = { id: number; name: string }
 
-export function CreateInspectionDialog({
+export function CreateDefectDialog({
   projects,
 }: {
   projects: ProjectOption[]
@@ -38,14 +38,11 @@ export function CreateInspectionDialog({
   function onSubmit(formData: FormData) {
     startTransition(async () => {
       try {
-        await createInspection(formData)
-        // createInspection redirects on success; toast shown on the detail page load
+        await createDefect(formData)
+        toast.success("Defect logged")
+        setOpen(false)
       } catch (e) {
-        // Next.js redirect throws a special error we should not treat as failure
-        if (e instanceof Error && e.message === "NEXT_REDIRECT") return
-        toast.error(
-          e instanceof Error ? e.message : "Failed to create inspection",
-        )
+        toast.error(e instanceof Error ? e.message : "Failed to log defect")
       }
     })
   }
@@ -58,16 +55,16 @@ export function CreateInspectionDialog({
         render={
           <Button disabled={disabled}>
             <Plus className="h-4 w-4" />
-            New inspection
+            Log defect
           </Button>
         }
       />
       <DialogContent className="max-h-[90svh] overflow-y-auto">
         <form action={onSubmit}>
           <DialogHeader>
-            <DialogTitle>New inspection request</DialogTitle>
+            <DialogTitle>Log defect / snag</DialogTitle>
             <DialogDescription>
-              Create an inspection and optionally seed its checklist.
+              Record a defect or snag observed on site for rectification.
             </DialogDescription>
           </DialogHeader>
           <div className="mt-4 flex flex-col gap-4">
@@ -77,7 +74,7 @@ export function CreateInspectionDialog({
                 id="title"
                 name="title"
                 required
-                placeholder="Rebar inspection — Level 3 slab"
+                placeholder="Cracked floor tile in lobby"
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -97,29 +94,6 @@ export function CreateInspectionDialog({
                 </Select>
               </div>
               <div className="flex flex-col gap-2">
-                <Label htmlFor="type">Type</Label>
-                <Select name="type" defaultValue="quality">
-                  <SelectTrigger id="type">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="quality">Quality</SelectItem>
-                    <SelectItem value="safety">Safety</SelectItem>
-                    <SelectItem value="progress">Progress</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="discipline">Discipline</Label>
-                <Input
-                  id="discipline"
-                  name="discipline"
-                  placeholder="Structural"
-                />
-              </div>
-              <div className="flex flex-col gap-2">
                 <Label htmlFor="priority">Priority</Label>
                 <Select name="priority" defaultValue="medium">
                   <SelectTrigger id="priority">
@@ -137,31 +111,39 @@ export function CreateInspectionDialog({
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-2">
                 <Label htmlFor="location">Location</Label>
-                <Input id="location" name="location" placeholder="Block B, L3" />
+                <Input
+                  id="location"
+                  name="location"
+                  placeholder="Ground floor lobby"
+                />
               </div>
               <div className="flex flex-col gap-2">
-                <Label htmlFor="scheduledFor">Scheduled for</Label>
-                <Input id="scheduledFor" name="scheduledFor" type="datetime-local" />
+                <Label htmlFor="trade">Trade</Label>
+                <Input id="trade" name="trade" placeholder="Finishes" />
               </div>
             </div>
             <div className="flex flex-col gap-2">
-              <Label htmlFor="checklist">Checklist items (one per line)</Label>
-              <Textarea
-                id="checklist"
-                name="checklist"
-                rows={4}
-                placeholder={"Rebar spacing per drawing\nCover blocks in place\nLap length verified"}
+              <Label htmlFor="assignedTo">Assigned to</Label>
+              <Input
+                id="assignedTo"
+                name="assignedTo"
+                placeholder="Subcontractor / party"
               />
             </div>
             <div className="flex flex-col gap-2">
-              <Label htmlFor="notes">Notes</Label>
-              <Textarea id="notes" name="notes" rows={2} />
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                name="description"
+                rows={3}
+                placeholder="Describe the defect..."
+              />
             </div>
           </div>
           <DialogFooter className="mt-6">
             <Button type="submit" disabled={pending}>
               {pending && <Loader2 className="h-4 w-4 animate-spin" />}
-              Create inspection
+              Log defect
             </Button>
           </DialogFooter>
         </form>

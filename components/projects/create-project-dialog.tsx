@@ -43,12 +43,14 @@ export function CreateProjectDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button>
-          <Plus className="h-4 w-4" />
-          New project
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button>
+            <Plus className="h-4 w-4" />
+            New project
+          </Button>
+        }
+      />
       <DialogContent>
         <form action={onSubmit}>
           <DialogHeader>

@@ -1,6 +1,6 @@
 "use client"
 
-import { createInspection } from "@/app/actions/inspections"
+import { createNcr } from "@/app/actions/ncrs"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -27,25 +27,18 @@ import { toast } from "sonner"
 
 type ProjectOption = { id: number; name: string }
 
-export function CreateInspectionDialog({
-  projects,
-}: {
-  projects: ProjectOption[]
-}) {
+export function CreateNcrDialog({ projects }: { projects: ProjectOption[] }) {
   const [open, setOpen] = useState(false)
   const [pending, startTransition] = useTransition()
 
   function onSubmit(formData: FormData) {
     startTransition(async () => {
       try {
-        await createInspection(formData)
-        // createInspection redirects on success; toast shown on the detail page load
+        await createNcr(formData)
+        toast.success("NCR raised")
+        setOpen(false)
       } catch (e) {
-        // Next.js redirect throws a special error we should not treat as failure
-        if (e instanceof Error && e.message === "NEXT_REDIRECT") return
-        toast.error(
-          e instanceof Error ? e.message : "Failed to create inspection",
-        )
+        toast.error(e instanceof Error ? e.message : "Failed to raise NCR")
       }
     })
   }
@@ -58,16 +51,16 @@ export function CreateInspectionDialog({
         render={
           <Button disabled={disabled}>
             <Plus className="h-4 w-4" />
-            New inspection
+            Raise NCR
           </Button>
         }
       />
       <DialogContent className="max-h-[90svh] overflow-y-auto">
         <form action={onSubmit}>
           <DialogHeader>
-            <DialogTitle>New inspection request</DialogTitle>
+            <DialogTitle>Raise non-conformance report</DialogTitle>
             <DialogDescription>
-              Create an inspection and optionally seed its checklist.
+              Document a non-conformance and assign it for corrective action.
             </DialogDescription>
           </DialogHeader>
           <div className="mt-4 flex flex-col gap-4">
@@ -77,7 +70,7 @@ export function CreateInspectionDialog({
                 id="title"
                 name="title"
                 required
-                placeholder="Rebar inspection — Level 3 slab"
+                placeholder="Concrete honeycombing at column C-4"
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -97,38 +90,14 @@ export function CreateInspectionDialog({
                 </Select>
               </div>
               <div className="flex flex-col gap-2">
-                <Label htmlFor="type">Type</Label>
-                <Select name="type" defaultValue="quality">
-                  <SelectTrigger id="type">
+                <Label htmlFor="severity">Severity</Label>
+                <Select name="severity" defaultValue="minor">
+                  <SelectTrigger id="severity">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="quality">Quality</SelectItem>
-                    <SelectItem value="safety">Safety</SelectItem>
-                    <SelectItem value="progress">Progress</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="discipline">Discipline</Label>
-                <Input
-                  id="discipline"
-                  name="discipline"
-                  placeholder="Structural"
-                />
-              </div>
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="priority">Priority</Label>
-                <Select name="priority" defaultValue="medium">
-                  <SelectTrigger id="priority">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="low">Low</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="high">High</SelectItem>
+                    <SelectItem value="minor">Minor</SelectItem>
+                    <SelectItem value="major">Major</SelectItem>
                     <SelectItem value="critical">Critical</SelectItem>
                   </SelectContent>
                 </Select>
@@ -136,32 +105,32 @@ export function CreateInspectionDialog({
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-2">
-                <Label htmlFor="location">Location</Label>
-                <Input id="location" name="location" placeholder="Block B, L3" />
+                <Label htmlFor="assignedTo">Assigned to</Label>
+                <Input
+                  id="assignedTo"
+                  name="assignedTo"
+                  placeholder="Contractor / party"
+                />
               </div>
               <div className="flex flex-col gap-2">
-                <Label htmlFor="scheduledFor">Scheduled for</Label>
-                <Input id="scheduledFor" name="scheduledFor" type="datetime-local" />
+                <Label htmlFor="dueDate">Due date</Label>
+                <Input id="dueDate" name="dueDate" type="date" />
               </div>
             </div>
             <div className="flex flex-col gap-2">
-              <Label htmlFor="checklist">Checklist items (one per line)</Label>
+              <Label htmlFor="description">Description</Label>
               <Textarea
-                id="checklist"
-                name="checklist"
-                rows={4}
-                placeholder={"Rebar spacing per drawing\nCover blocks in place\nLap length verified"}
+                id="description"
+                name="description"
+                rows={3}
+                placeholder="Describe the non-conformance and required corrective action..."
               />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="notes">Notes</Label>
-              <Textarea id="notes" name="notes" rows={2} />
             </div>
           </div>
           <DialogFooter className="mt-6">
             <Button type="submit" disabled={pending}>
               {pending && <Loader2 className="h-4 w-4 animate-spin" />}
-              Create inspection
+              Raise NCR
             </Button>
           </DialogFooter>
         </form>
