@@ -12,6 +12,10 @@ const trustedOrigins = [
   process.env.V0_RUNTIME_URL,
   process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined,
   process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : undefined,
+  // v0 preview + Vercel deploy previews are served from these wildcard hosts.
+  "http://localhost:3000",
+  "https://*.vercel.run",
+  "https://*.vercel.app",
 ].filter(Boolean) as string[]
 
 export const auth = betterAuth({

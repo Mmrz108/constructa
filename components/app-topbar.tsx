@@ -47,12 +47,14 @@ export function AppTopbar({
       <div className="flex items-center gap-2">
         {/* Mobile nav */}
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="md:hidden">
-              <Menu className="h-5 w-5" />
-              <span className="sr-only">Open navigation</span>
-            </Button>
-          </DropdownMenuTrigger>
+          <DropdownMenuTrigger
+            render={
+              <Button variant="ghost" size="icon" className="md:hidden">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Open navigation</span>
+              </Button>
+            }
+          />
           <DropdownMenuContent align="start" className="w-56">
             {navSections.map((section) => (
               <div key={section.label}>
@@ -82,15 +84,17 @@ export function AppTopbar({
           {role}
         </span>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="flex items-center gap-2 rounded-md p-1 transition-colors hover:bg-accent">
-              <Avatar className="h-8 w-8">
-                <AvatarFallback className="bg-primary/10 text-xs font-medium text-primary">
-                  {initials(user.name)}
-                </AvatarFallback>
-              </Avatar>
-            </button>
-          </DropdownMenuTrigger>
+          <DropdownMenuTrigger
+            render={
+              <button className="flex items-center gap-2 rounded-md p-1 transition-colors hover:bg-accent">
+                <Avatar className="h-8 w-8">
+                  <AvatarFallback className="bg-primary/10 text-xs font-medium text-primary">
+                    {initials(user.name)}
+                  </AvatarFallback>
+                </Avatar>
+              </button>
+            }
+          />
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel className="flex flex-col">
               <span className="text-sm font-medium">{user.name}</span>
@@ -99,9 +103,7 @@ export function AppTopbar({
               </span>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href="/settings">Settings</Link>
-            </DropdownMenuItem>
+            <DropdownMenuItem render={<Link href="/settings">Settings</Link>} />
             <DropdownMenuSeparator />
             <SignOutButton />
           </DropdownMenuContent>

@@ -63,16 +63,18 @@ export function DefectStatusMenu({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" disabled={pending}>
-          {pending ? (
-            <Loader2 className="h-3.5 w-3.5 animate-spin" />
-          ) : (
-            <ChevronDown className="h-3.5 w-3.5" />
-          )}
-          Update
-        </Button>
-      </DropdownMenuTrigger>
+      <DropdownMenuTrigger
+        render={
+          <Button variant="outline" size="sm" disabled={pending}>
+            {pending ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <ChevronDown className="h-3.5 w-3.5" />
+            )}
+            Update
+          </Button>
+        }
+      />
       <DropdownMenuContent align="end">
         {options.map((o) => (
           <DropdownMenuItem key={o.value} onClick={() => move(o.value)}>
