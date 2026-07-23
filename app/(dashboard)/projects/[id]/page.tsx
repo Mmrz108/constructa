@@ -2,13 +2,23 @@ import { PageBody, PageHeader } from "@/components/page-shell"
 import { StatusBadge } from "@/components/status-badge"
 import { Card } from "@/components/ui/card"
 import { requireContext } from "@/lib/session"
-import { getProject } from "@/lib/queries"
+import { getProject, getOrgMembers } from "@/lib/queries"
 import { db } from "@/lib/db"
 import { inspection, ncr, defect } from "@/lib/db/schema"
 import { and, desc, eq } from "drizzle-orm"
 import { notFound } from "next/navigation"
 import Link from "next/link"
-import { Building2, MapPin, CalendarDays, ArrowLeft } from "lucide-react"
+import {
+  Building2,
+  MapPin,
+  CalendarDays,
+  ArrowLeft,
+  HardHat,
+  Landmark,
+  UserCheck,
+  Hammer,
+} from "lucide-react"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 
 export default async function ProjectDetailPage({
   params,
@@ -21,6 +31,32 @@ export default async function ProjectDetailPage({
 
   const p = await getProject(orgId, projectId)
   if (!p) notFound()
+
+  const members = await getOrgMembers(orgId)
+  const nameOf = (uid: string | null) =>
+    uid ? (members.find((m) => m.id === uid)?.name ?? null) : null
+
+  const roles = [
+    { key: "owner", label: "Owner", icon: Landmark, name: nameOf(p.ownerUserId) },
+    {
+      key: "contractor",
+      label: "Contractor",
+      icon: HardHat,
+      name: nameOf(p.contractorUserId),
+    },
+    {
+      key: "supervisor",
+      label: "Supervisor",
+      icon: UserCheck,
+      name: nameOf(p.supervisorUserId),
+    },
+    {
+      key: "developer",
+      label: "Developer",
+      icon: Hammer,
+      name: nameOf(p.developerUserId),
+    },
+  ]
 
   const [inspections, ncrs, defects] = await Promise.all([
     db
@@ -87,6 +123,42 @@ export default async function ProjectDetailPage({
             <p className="text-sm">{p.description}</p>
           </Card>
         )}
+
+        <div>
+          <h3 className="mb-3 text-sm font-semibold">Project roles</h3>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {roles.map((r) => (
+              <Card key={r.key} className="flex flex-row items-center gap-3 p-4">
+                {r.name ? (
+                  <Avatar className="h-9 w-9">
+                    <AvatarFallback className="bg-primary/10 text-xs font-medium text-primary">
+                      {r.name
+                        .split(" ")
+                        .map((s) => s[0])
+                        .filter(Boolean)
+                        .slice(0, 2)
+                        .join("")
+                        .toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                ) : (
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                    <r.icon className="h-4 w-4" />
+                  </div>
+                )}
+                <div className="min-w-0">
+                  <p className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <r.icon className="h-3 w-3" />
+                    {r.label}
+                  </p>
+                  <p className="truncate text-sm font-medium">
+                    {r.name ?? "Unassigned"}
+                  </p>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
 
         <div className="grid gap-6 lg:grid-cols-3">
           <MiniList

@@ -11,6 +11,19 @@ export async function createProject(formData: FormData) {
   const name = String(formData.get("name") ?? "").trim()
   if (!name) throw new Error("Project name is required")
 
+  const ownerUserId = String(formData.get("ownerUserId") ?? "").trim() || null
+  const contractorUserId =
+    String(formData.get("contractorUserId") ?? "").trim() || null
+  const supervisorUserId =
+    String(formData.get("supervisorUserId") ?? "").trim() || null
+  const developerRaw = String(formData.get("developerUserId") ?? "").trim()
+  const developerUserId =
+    developerRaw && developerRaw !== "none" ? developerRaw : null
+
+  if (!ownerUserId) throw new Error("An owner must be assigned")
+  if (!contractorUserId) throw new Error("A contractor must be assigned")
+  if (!supervisorUserId) throw new Error("A supervisor must be assigned")
+
   await db.insert(project).values({
     orgId,
     userId: user.id,
@@ -20,6 +33,10 @@ export async function createProject(formData: FormData) {
     location: String(formData.get("location") ?? "").trim() || null,
     description: String(formData.get("description") ?? "").trim() || null,
     status: String(formData.get("status") ?? "active"),
+    ownerUserId,
+    contractorUserId,
+    supervisorUserId,
+    developerUserId,
   })
 
   revalidatePath("/projects")

@@ -8,10 +8,34 @@ import {
   dailyReport,
   checklistTemplate,
   progressSnapshot,
+  membership,
+  user,
 } from "@/lib/db/schema"
 import { and, asc, desc, eq, count, inArray } from "drizzle-orm"
 
 /** All queries are scoped by orgId — this is the tenant isolation boundary. */
+
+export type OrgMember = {
+  id: string
+  name: string
+  email: string
+  role: string
+}
+
+/** Members of an organization, joined to their Better Auth user record. */
+export async function getOrgMembers(orgId: number): Promise<OrgMember[]> {
+  return db
+    .select({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: membership.role,
+    })
+    .from(membership)
+    .innerJoin(user, eq(user.id, membership.userId))
+    .where(eq(membership.orgId, orgId))
+    .orderBy(asc(user.name))
+}
 
 export async function getProjects(orgId: number) {
   return db

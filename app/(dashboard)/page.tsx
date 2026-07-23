@@ -17,6 +17,7 @@ import {
   getInspections,
   getNcrs,
   getDefects,
+  getOrgMembers,
 } from "@/lib/queries"
 import {
   ClipboardCheck,
@@ -29,6 +30,8 @@ import {
   CalendarClock,
   FilePlus2,
   ArrowRight,
+  Landmark,
+  UserCheck,
 } from "lucide-react"
 
 const STATUS_LABEL: Record<string, string> = {
@@ -133,7 +136,7 @@ export default async function DashboardPage() {
   const { orgId } = await requireContext()
   const project = await getPrimaryProject(orgId)
 
-  const [stats, series, ncrBreakdown, pending, inspections, ncrs, defects] =
+  const [stats, series, ncrBreakdown, pending, inspections, ncrs, defects, members] =
     await Promise.all([
       getDashboardStats(orgId),
       project ? getProgressSeries(orgId, project.id) : Promise.resolve([]),
@@ -142,7 +145,16 @@ export default async function DashboardPage() {
       getInspections(orgId),
       getNcrs(orgId),
       getDefects(orgId),
+      getOrgMembers(orgId),
     ])
+
+  const nameOf = (uid: string | null | undefined) =>
+    uid ? (members.find((m) => m.id === uid)?.name ?? null) : null
+  const contractorName = project
+    ? (nameOf(project.contractorUserId) ?? project.contractor)
+    : null
+  const supervisorName = project ? nameOf(project.supervisorUserId) : null
+  const ownerName = project ? nameOf(project.ownerUserId) : null
 
   const today = new Date().toLocaleDateString("en-GB", {
     weekday: "long",
@@ -212,7 +224,7 @@ export default async function DashboardPage() {
                     <MapPin className="h-4 w-4" />
                     {project.location ?? "Location not set"}
                   </div>
-                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                     <DetailItem
                       icon={HardHat}
                       label="Status"
@@ -220,9 +232,19 @@ export default async function DashboardPage() {
                       valueClass="text-success"
                     />
                     <DetailItem
+                      icon={Landmark}
+                      label="Owner"
+                      value={ownerName ?? "—"}
+                    />
+                    <DetailItem
                       icon={Building2}
                       label="Contractor"
-                      value={project.contractor ?? "—"}
+                      value={contractorName ?? "—"}
+                    />
+                    <DetailItem
+                      icon={UserCheck}
+                      label="Supervisor"
+                      value={supervisorName ?? "—"}
                     />
                     <DetailItem
                       icon={Building2}
