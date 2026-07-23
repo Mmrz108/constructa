@@ -3,20 +3,23 @@ import { StatusBadge } from "@/components/status-badge"
 import { CreateProjectDialog } from "@/components/projects/create-project-dialog"
 import { Card } from "@/components/ui/card"
 import { requireContext } from "@/lib/session"
-import { getProjects } from "@/lib/queries"
+import { getProjects, getOrgMembers } from "@/lib/queries"
 import { FolderKanban, MapPin, Building2 } from "lucide-react"
 import Link from "next/link"
 
 export default async function ProjectsPage() {
   const { orgId } = await requireContext()
-  const projects = await getProjects(orgId)
+  const [projects, members] = await Promise.all([
+    getProjects(orgId),
+    getOrgMembers(orgId),
+  ])
 
   return (
     <>
       <PageHeader
         title="Projects"
         description="All construction projects in your workspace."
-        action={<CreateProjectDialog />}
+        action={<CreateProjectDialog members={members} />}
       />
       <PageBody>
         {projects.length === 0 ? (
@@ -24,7 +27,7 @@ export default async function ProjectsPage() {
             icon={FolderKanban}
             title="No projects yet"
             description="Create your first project to start managing inspections, NCRs, and site records."
-            action={<CreateProjectDialog />}
+            action={<CreateProjectDialog members={members} />}
           />
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

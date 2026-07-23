@@ -60,7 +60,7 @@ export const navSections: NavSection[] = [
         icon: FileText,
         ready: true,
       },
-      { title: "Team", href: "/team", icon: Users, ready: false },
+      { title: "Team", href: "/team", icon: Users, ready: true },
       { title: "Settings", href: "/settings", icon: Settings, ready: false },
     ],
   },
