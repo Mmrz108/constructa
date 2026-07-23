@@ -7,7 +7,8 @@ memberships, stages metadata, and related records.
 ## 1. Push is already on GitHub
 
 Repository: https://github.com/Mmrz108/constructa  
-Branch: `bonyan` (also mirrored to `main` for Vercel default deploys)
+Branch to deploy: **`bonyan`**  
+(In Vercel → Project → Settings → Git → Production Branch, set to `bonyan`.)
 
 ## 2. Create a Postgres database
 
