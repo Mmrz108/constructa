@@ -7,7 +7,11 @@ import { and, eq } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
 
 export async function createProject(formData: FormData) {
-  const { orgId, user } = await requireContext()
+  const { orgId, user, role } = await requireContext()
+  const { getOrgSettings, assertCan } = await import("@/lib/settings")
+  const settings = await getOrgSettings(orgId)
+  assertCan(role, "projects", "create", settings.permissions)
+
   const name = String(formData.get("name") ?? "").trim()
   if (!name) throw new Error("Project name is required")
 

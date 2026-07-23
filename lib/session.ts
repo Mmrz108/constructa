@@ -2,6 +2,7 @@ import "server-only"
 import { auth } from "@/lib/auth"
 import { db } from "@/lib/db"
 import { membership, organization } from "@/lib/db/schema"
+import { normalizeRole } from "@/lib/roles"
 import { and, eq } from "drizzle-orm"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
@@ -14,13 +15,20 @@ export type SessionUser = {
 }
 
 export async function getSessionUser(): Promise<SessionUser | null> {
-  const session = await auth.api.getSession({ headers: await headers() })
-  if (!session?.user) return null
-  return {
-    id: session.user.id,
-    name: session.user.name,
-    email: session.user.email,
-    image: session.user.image ?? null,
+  try {
+    const session = await auth.api.getSession({ headers: await headers() })
+    if (!session?.user) return null
+    return {
+      id: session.user.id,
+      name: session.user.name,
+      email: session.user.email,
+      image: session.user.image ?? null,
+    }
+  } catch (error) {
+    // DB/auth outages or stale cookies should send the user to sign-in,
+    // not crash the whole dashboard layout.
+    console.error("[getSessionUser]", error)
+    return null
   }
 }
 
@@ -48,7 +56,12 @@ export type ActiveContext = {
  * Redirects to onboarding if the user has no organization yet.
  */
 export async function requireContext(): Promise<ActiveContext> {
-  const user = await requireUser()
+  const sessionUser = await requireUser()
+
+  // Every logged-in user must have a profile photo for the topbar.
+  const { ensureUserAvatar } = await import("@/lib/avatar")
+  const image = await ensureUserAvatar(sessionUser)
+  const user = { ...sessionUser, image }
 
   const rows = await db
     .select({
@@ -80,4 +93,19 @@ export async function assertMembership(userId: string, orgId: number) {
     .where(and(eq(membership.userId, userId), eq(membership.orgId, orgId)))
     .limit(1)
   if (!rows[0]) throw new Error("Forbidden: not a member of this organization")
+}
+
+/** Admin-only gate for destructive / migration tools. */
+export async function requireAdmin(): Promise<ActiveContext> {
+  const ctx = await requireContext()
+  if (normalizeRole(ctx.role) !== "admin") {
+    redirect("/")
+  }
+  return ctx
+}
+
+export function assertAdminRole(role: string) {
+  if (normalizeRole(role) !== "admin") {
+    throw new Error("Forbidden: admin role required")
+  }
 }

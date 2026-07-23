@@ -26,25 +26,44 @@ import { useMemo, useState, useTransition } from "react"
 import { toast } from "sonner"
 
 type ProjectOption = { id: number; name: string }
+type StageOption = { id: number; name: string; projectId: number | null }
 
 export function CreateDailyReportDialog({
   projects,
+  stages = [],
 }: {
   projects: ProjectOption[]
+  stages?: StageOption[]
 }) {
   const [open, setOpen] = useState(false)
   const [pending, startTransition] = useTransition()
+  const [projectId, setProjectId] = useState("")
+
   const projectItems = useMemo(
     () => projects.map((p) => ({ value: String(p.id), label: p.name })),
     [projects],
   )
 
+  const stageItems = useMemo(() => {
+    const pid = Number(projectId)
+    const filtered = stages.filter((s) => !s.projectId || s.projectId === pid)
+    return [
+      { value: "none", label: "No stage" },
+      ...filtered.map((s) => ({ value: String(s.id), label: s.name })),
+    ]
+  }, [stages, projectId])
+
   function onSubmit(formData: FormData) {
+    if (projectId) formData.set("projectId", projectId)
+    const stageId = String(formData.get("stageId") ?? "")
+    if (!stageId || stageId === "none") formData.delete("stageId")
+
     startTransition(async () => {
       try {
         await createDailyReport(formData)
         toast.success("Daily report created")
         setOpen(false)
+        setProjectId("")
       } catch (e) {
         toast.error(e instanceof Error ? e.message : "Failed to create report")
       }
@@ -64,20 +83,26 @@ export function CreateDailyReportDialog({
           </Button>
         }
       />
-      <DialogContent className="max-h-[90svh] overflow-y-auto">
-        <form action={onSubmit}>
+      <DialogContent className="max-h-[90svh] overflow-y-auto sm:max-w-lg">
+        <form action={onSubmit} encType="multipart/form-data">
           <DialogHeader>
-            <DialogTitle>New daily site report</DialogTitle>
+            <DialogTitle>Daily site report</DialogTitle>
             <DialogDescription>
-              Record site activity, manpower, and progress for the day.
+              Weather, manpower, work done, tomorrow plan, equipment,
+              problems/risks, incidents, photos, and supervisor signature.
             </DialogDescription>
           </DialogHeader>
           <div className="mt-4 flex flex-col gap-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-2">
-                <Label htmlFor="projectId">Project</Label>
-                <Select name="projectId" required items={projectItems}>
-                  <SelectTrigger id="projectId" className="w-full">
+                <Label>Project</Label>
+                <Select
+                  value={projectId}
+                  onValueChange={(v) => setProjectId(v ?? "")}
+                  items={projectItems}
+                  required
+                >
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select project" />
                   </SelectTrigger>
                   <SelectContent>
@@ -100,6 +125,26 @@ export function CreateDailyReportDialog({
                 />
               </div>
             </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="stageId">Stage</Label>
+              <Select
+                name="stageId"
+                defaultValue="none"
+                items={stageItems}
+                disabled={!projectId}
+              >
+                <SelectTrigger id="stageId" className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {stageItems.map((s) => (
+                    <SelectItem key={s.value} value={s.value}>
+                      {s.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-2">
                 <Label htmlFor="weather">Weather</Label>
@@ -117,26 +162,57 @@ export function CreateDailyReportDialog({
               </div>
             </div>
             <div className="flex flex-col gap-2">
-              <Label htmlFor="workDone">Work completed</Label>
+              <Label htmlFor="workDone">Work completed today</Label>
+              <Textarea id="workDone" name="workDone" rows={2} />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="tomorrowPlan">Tomorrow&apos;s plan</Label>
+              <Textarea id="tomorrowPlan" name="tomorrowPlan" rows={2} />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="equipment">Equipment on site</Label>
+              <Textarea id="equipment" name="equipment" rows={2} />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="problemsRisks">Problems & risks</Label>
+              <Textarea id="problemsRisks" name="problemsRisks" rows={2} />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="incidents">Incidents</Label>
               <Textarea
-                id="workDone"
-                name="workDone"
-                rows={3}
-                placeholder="Concrete pour Level 3, blockwork Zone B..."
+                id="incidents"
+                name="incidents"
+                rows={2}
+                placeholder="Safety / quality incidents (or None)"
               />
             </div>
             <div className="flex flex-col gap-2">
-              <Label htmlFor="summary">Summary / issues</Label>
-              <Textarea
-                id="summary"
-                name="summary"
-                rows={2}
-                placeholder="Delays, deliveries, safety notes..."
+              <Label htmlFor="summary">Summary</Label>
+              <Textarea id="summary" name="summary" rows={2} />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="photos">Daily photos</Label>
+              <Input
+                id="photos"
+                name="photos"
+                type="file"
+                accept="image/*"
+                multiple
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="supervisorSignature">
+                Supervisor signature (type full name)
+              </Label>
+              <Input
+                id="supervisorSignature"
+                name="supervisorSignature"
+                placeholder="Supervisor full name"
               />
             </div>
           </div>
           <DialogFooter className="mt-6">
-            <Button type="submit" disabled={pending}>
+            <Button type="submit" disabled={pending || !projectId}>
               {pending && <Loader2 className="h-4 w-4 animate-spin" />}
               Create report
             </Button>

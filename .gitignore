@@ -14,5 +14,9 @@ node_modules
 .next/
 .DS_Store
 # uploaded inspection photos
-public/uploads/inspections/**
-!public/uploads/inspections/.gitkeep
+public/uploads/**
+!public/uploads/**/.gitkeep
+
+# local TS build cache
+tsconfig.tsbuildinfo
+

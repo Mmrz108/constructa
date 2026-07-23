@@ -15,6 +15,7 @@ import {
   financeAccount,
   emailMessage,
   errorReport,
+  projectMembership,
 } from "@/lib/db/schema"
 import { and, asc, desc, eq, count, inArray } from "drizzle-orm"
 
@@ -25,6 +26,10 @@ export type OrgMember = {
   name: string
   email: string
   role: string
+  image: string | null
+  emailVerified: boolean
+  createdAt: Date
+  memberSince: Date
 }
 
 /** Members of an organization, joined to their Better Auth user record. */
@@ -35,6 +40,10 @@ export async function getOrgMembers(orgId: number): Promise<OrgMember[]> {
       name: user.name,
       email: user.email,
       role: membership.role,
+      image: user.image,
+      emailVerified: user.emailVerified,
+      createdAt: user.createdAt,
+      memberSince: membership.createdAt,
     })
     .from(membership)
     .innerJoin(user, eq(user.id, membership.userId))
@@ -99,9 +108,16 @@ export async function getNcrs(orgId: number) {
       id: ncr.id,
       number: ncr.number,
       title: ncr.title,
+      description: ncr.description,
+      violatedStandard: ncr.violatedStandard,
+      location: ncr.location,
       severity: ncr.severity,
+      priority: ncr.priority,
       status: ncr.status,
+      assignedTo: ncr.assignedTo,
       dueDate: ncr.dueDate,
+      stageId: ncr.stageId,
+      attachments: ncr.attachments,
       createdAt: ncr.createdAt,
       projectName: project.name,
     })
@@ -116,10 +132,17 @@ export async function getDefects(orgId: number) {
     .select({
       id: defect.id,
       title: defect.title,
+      description: defect.description,
       location: defect.location,
+      category: defect.category,
       trade: defect.trade,
       status: defect.status,
       priority: defect.priority,
+      assignedTo: defect.assignedTo,
+      stageId: defect.stageId,
+      beforePhotoUrls: defect.beforePhotoUrls,
+      afterPhotoUrls: defect.afterPhotoUrls,
+      closeApprovedBy: defect.closeApprovedBy,
       createdAt: defect.createdAt,
       projectName: project.name,
     })
@@ -137,7 +160,15 @@ export async function getDailyReports(orgId: number) {
       weather: dailyReport.weather,
       manpower: dailyReport.manpower,
       summary: dailyReport.summary,
+      workDone: dailyReport.workDone,
+      tomorrowPlan: dailyReport.tomorrowPlan,
+      equipment: dailyReport.equipment,
+      problemsRisks: dailyReport.problemsRisks,
+      incidents: dailyReport.incidents,
+      photoUrls: dailyReport.photoUrls,
+      supervisorSignature: dailyReport.supervisorSignature,
       status: dailyReport.status,
+      stageId: dailyReport.stageId,
       projectName: project.name,
     })
     .from(dailyReport)
@@ -152,6 +183,46 @@ export async function getChecklistTemplates(orgId: number) {
     .from(checklistTemplate)
     .where(eq(checklistTemplate.orgId, orgId))
     .orderBy(desc(checklistTemplate.createdAt))
+}
+
+export async function getProjectMemberships(orgId: number) {
+  return db
+    .select({
+      id: projectMembership.id,
+      projectId: projectMembership.projectId,
+      userId: projectMembership.userId,
+      role: projectMembership.role,
+      projectName: project.name,
+      projectCode: project.code,
+      userName: user.name,
+      userEmail: user.email,
+    })
+    .from(projectMembership)
+    .innerJoin(project, eq(project.id, projectMembership.projectId))
+    .innerJoin(user, eq(user.id, projectMembership.userId))
+    .where(eq(projectMembership.orgId, orgId))
+    .orderBy(asc(user.name), asc(project.name))
+}
+
+export async function getUserProjectAssignments(
+  orgId: number,
+  userId: string,
+) {
+  return db
+    .select({
+      id: projectMembership.id,
+      projectId: projectMembership.projectId,
+      role: projectMembership.role,
+      projectName: project.name,
+    })
+    .from(projectMembership)
+    .innerJoin(project, eq(project.id, projectMembership.projectId))
+    .where(
+      and(
+        eq(projectMembership.orgId, orgId),
+        eq(projectMembership.userId, userId),
+      ),
+    )
 }
 
 export async function getOpenErrorReports(orgId: number) {

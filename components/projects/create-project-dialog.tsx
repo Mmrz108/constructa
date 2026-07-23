@@ -125,7 +125,7 @@ export function CreateProjectDialog({ members }: { members: Member[] }) {
               <div className="mb-1 flex items-center justify-between">
                 <p className="text-sm font-medium">Project roles</p>
                 <Link
-                  href="/team"
+                  href="/users"
                   className="flex items-center gap-1 text-xs text-primary hover:underline"
                 >
                   <UserPlus className="h-3 w-3" />
@@ -135,7 +135,7 @@ export function CreateProjectDialog({ members }: { members: Member[] }) {
               {noMembers ? (
                 <p className="text-sm text-muted-foreground text-pretty">
                   Add teammates on the{" "}
-                  <Link href="/team" className="text-primary hover:underline">
+                  <Link href="/users" className="text-primary hover:underline">
                     Team page
                   </Link>{" "}
                   first, then assign them here.

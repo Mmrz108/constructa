@@ -1,5 +1,5 @@
 import { betterAuth } from "better-auth"
-import { Pool } from "pg"
+import { pool } from "@/lib/db"
 
 function getBaseURL() {
   if (process.env.BETTER_AUTH_URL) return process.env.BETTER_AUTH_URL
@@ -19,18 +19,19 @@ const trustedOrigins = [
 ].filter(Boolean) as string[]
 
 export const auth = betterAuth({
-  database: new Pool({ connectionString: process.env.DATABASE_URL }),
+  database: pool,
   baseURL: getBaseURL(),
   trustedOrigins,
   emailAndPassword: {
     enabled: true,
   },
+  // Local HTTP needs lax/non-secure cookies. sameSite=none+secure breaks localhost.
   advanced:
     process.env.NODE_ENV === "development"
       ? {
           defaultCookieAttributes: {
-            sameSite: "none",
-            secure: true,
+            sameSite: "lax",
+            secure: false,
           },
         }
       : undefined,

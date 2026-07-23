@@ -9,14 +9,10 @@ import {
   ListChecks,
   Users,
   Settings,
-  UserRound,
-  HardHat,
-  Building2,
-  Mail,
-  Crown,
-  Landmark,
-  Shield,
+  ArrowLeftRight,
 } from "lucide-react"
+import { can, NAV_MODULE_MAP } from "@/lib/settings/permissions"
+import type { PermissionMatrix } from "@/lib/settings/types"
 
 export type NavItem = {
   title: string
@@ -31,7 +27,10 @@ export type NavSection = {
   items: NavItem[]
 }
 
-/** Menu aligned with legacy login.bonyan-om.com sidebar. */
+/**
+ * Core menus preserved: Dashboard, Project, Create Stages, Users,
+ * Inspections, NCRs, Defects & Snags, Daily Reports, Settings.
+ */
 export const navSections: NavSection[] = [
   {
     label: "Main",
@@ -44,39 +43,7 @@ export const navSections: NavSection[] = [
         icon: ListChecks,
         ready: true,
       },
-    ],
-  },
-  {
-    label: "User Access",
-    items: [
-      {
-        title: "User Access",
-        href: "/user-access",
-        icon: Shield,
-        ready: true,
-      },
-      { title: "Client", href: "/clients", icon: UserRound, ready: true },
-      {
-        title: "Contractor",
-        href: "/contractors",
-        icon: Building2,
-        ready: true,
-      },
-      {
-        title: "Supervisor",
-        href: "/supervisors",
-        icon: HardHat,
-        ready: true,
-      },
-    ],
-  },
-  {
-    label: "Organization",
-    items: [
-      { title: "Email", href: "/email", icon: Mail, ready: true },
-      { title: "Leaders", href: "/leaders", icon: Crown, ready: true },
-      { title: "Accounts", href: "/accounts", icon: Landmark, ready: true },
-      { title: "Team", href: "/team", icon: Users, ready: true },
+      { title: "Users", href: "/users", icon: Users, ready: true },
     ],
   },
   {
@@ -99,6 +66,34 @@ export const navSections: NavSection[] = [
       { title: "Settings", href: "/settings", icon: Settings, ready: true },
     ],
   },
+  {
+    label: "Admin",
+    items: [
+      {
+        title: "Import / Export",
+        href: "/import-export",
+        icon: ArrowLeftRight,
+        ready: true,
+      },
+    ],
+  },
 ]
 
 export const allNavItems = navSections.flatMap((s) => s.items)
+
+/** Filter nav by Settings hub permissions. */
+export function getNavSectionsForRole(
+  role: string,
+  permissions?: PermissionMatrix,
+): NavSection[] {
+  return navSections
+    .map((section) => ({
+      ...section,
+      items: section.items.filter((item) => {
+        const mod = NAV_MODULE_MAP[item.title]
+        if (mod == null) return true
+        return can(role, mod, "view", permissions)
+      }),
+    }))
+    .filter((section) => section.items.length > 0)
+}

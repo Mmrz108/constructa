@@ -12,16 +12,24 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { requireContext } from "@/lib/session"
-import { getNcrs, getProjects } from "@/lib/queries"
+import { getNcrs, getProjects, getChecklistTemplates } from "@/lib/queries"
 import { AlertTriangle } from "lucide-react"
 
 export default async function NcrsPage() {
   const { orgId } = await requireContext()
-  const [ncrs, projects] = await Promise.all([
+  const [ncrs, projects, templates] = await Promise.all([
     getNcrs(orgId),
     getProjects(orgId),
+    getChecklistTemplates(orgId),
   ])
   const projectOptions = projects.map((p) => ({ id: p.id, name: p.name }))
+  const stageOptions = templates
+    .filter((t) => t.isActive)
+    .map((t) => ({
+      id: t.id,
+      name: t.name,
+      projectId: t.projectId,
+    }))
 
   const open = ncrs.filter((n) => n.status !== "closed").length
 
@@ -29,8 +37,10 @@ export default async function NcrsPage() {
     <>
       <PageHeader
         title="Non-Conformance Reports"
-        description={`${open} open · ${ncrs.length} total. Track corrective-action cycles to closure.`}
-        action={<CreateNcrDialog projects={projectOptions} />}
+        description={`${open} open · ${ncrs.length} total. Track corrective-action cycles to closure. Linked to project & stage.`}
+        action={
+          <CreateNcrDialog projects={projectOptions} stages={stageOptions} />
+        }
       />
       <PageBody>
         {ncrs.length === 0 ? (
@@ -38,7 +48,12 @@ export default async function NcrsPage() {
             icon={AlertTriangle}
             title="No NCRs raised"
             description="Raise a non-conformance report to log a quality or compliance issue for corrective action."
-            action={<CreateNcrDialog projects={projectOptions} />}
+            action={
+              <CreateNcrDialog
+                projects={projectOptions}
+                stages={stageOptions}
+              />
+            }
           />
         ) : (
           <Card className="p-0">
@@ -48,6 +63,9 @@ export default async function NcrsPage() {
                   <TableHead className="w-24">Number</TableHead>
                   <TableHead>Title</TableHead>
                   <TableHead className="hidden md:table-cell">Project</TableHead>
+                  <TableHead className="hidden lg:table-cell">
+                    Location
+                  </TableHead>
                   <TableHead>Severity</TableHead>
                   <TableHead className="hidden lg:table-cell">Due</TableHead>
                   <TableHead>Status</TableHead>
@@ -60,9 +78,21 @@ export default async function NcrsPage() {
                     <TableCell className="font-mono text-xs text-muted-foreground">
                       {n.number ?? "—"}
                     </TableCell>
-                    <TableCell className="font-medium">{n.title}</TableCell>
+                    <TableCell className="font-medium">
+                      <div>
+                        {n.title}
+                        {n.violatedStandard && (
+                          <p className="text-xs font-normal text-muted-foreground">
+                            Std: {n.violatedStandard}
+                          </p>
+                        )}
+                      </div>
+                    </TableCell>
                     <TableCell className="hidden text-muted-foreground md:table-cell">
                       {n.projectName}
+                    </TableCell>
+                    <TableCell className="hidden text-muted-foreground lg:table-cell">
+                      {n.location ?? "—"}
                     </TableCell>
                     <TableCell>
                       <StatusBadge value={n.severity} />

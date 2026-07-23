@@ -1,0 +1,163 @@
+﻿[
+    {
+        "remoteId":  "admin",
+        "name":  "Legacy Admin",
+        "email":  "admin@test.com",
+        "role":  "admin",
+        "since":  ""
+    },
+    {
+        "remoteId":  "664",
+        "name":  "NAJEEB AL AJMI",
+        "email":  "alajmi@test.com",
+        "role":  "client",
+        "since":  "16 Jun 26"
+    },
+    {
+        "remoteId":  "655",
+        "name":  "jothis",
+        "email":  "asffmij@test.com",
+        "role":  "client",
+        "since":  "01 Jun 26"
+    },
+    {
+        "remoteId":  "647",
+        "name":  "MR. MOHAMMED ALI MOHAMMED AL KALBANI",
+        "email":  "bonyan_2025-117@gmail.com",
+        "role":  "client",
+        "since":  "23 Jan 26"
+    },
+    {
+        "remoteId":  "648",
+        "name":  "MR. MAHMOOD RASHID MOHAMMED AL RIYAMI",
+        "email":  "bonyan_2025-180@gmail.com",
+        "role":  "client",
+        "since":  "25 Jan 26"
+    },
+    {
+        "remoteId":  "645",
+        "name":  "MR. HAMED KHALFAN MOHAMED AL AMRI",
+        "email":  "bonyan_2026-001@gmail.com",
+        "role":  "client",
+        "since":  "10 Jan 26"
+    },
+    {
+        "remoteId":  "649",
+        "name":  "Mr. Abdullah Al Balushi",
+        "email":  "bonyan_2026-035@gmail.com",
+        "role":  "client",
+        "since":  "11 Apr 26"
+    },
+    {
+        "remoteId":  "659",
+        "name":  "ismail",
+        "email":  "ismail@test.com",
+        "role":  "client",
+        "since":  "04 Jun 26"
+    },
+    {
+        "remoteId":  "669",
+        "name":  "mohammad",
+        "email":  "mdnajsdh@gmail.com",
+        "role":  "client",
+        "since":  "22 Jul 26"
+    },
+    {
+        "remoteId":  "662",
+        "name":  "ster",
+        "email":  "ster@test.com",
+        "role":  "client",
+        "since":  "09 Jun 26"
+    },
+    {
+        "remoteId":  "667",
+        "name":  "talal al salmi",
+        "email":  "talal@test.com",
+        "role":  "client",
+        "since":  "05 Jul 26"
+    },
+    {
+        "remoteId":  "666",
+        "name":  "ERJUAN QURAYAT TRADING",
+        "email":  "abdullahessa84@gmail.com",
+        "role":  "contractor",
+        "since":  "16 Jun 26"
+    },
+    {
+        "remoteId":  "650",
+        "name":  "thdtysres",
+        "email":  "asffmin@test.com",
+        "role":  "contractor",
+        "since":  "20 May 26"
+    },
+    {
+        "remoteId":  "657",
+        "name":  "DREAM VILLA",
+        "email":  "asfgdtj@test.com",
+        "role":  "contractor",
+        "since":  "01 Jun 26"
+    },
+    {
+        "remoteId":  "652",
+        "name":  "Najam ur rehman",
+        "email":  "cnt88@gmail.com",
+        "role":  "contractor",
+        "since":  "31 May 26"
+    },
+    {
+        "remoteId":  "654",
+        "name":  "gsdfg",
+        "email":  "fsadf@test.com",
+        "role":  "contractor",
+        "since":  "31 May 26"
+    },
+    {
+        "remoteId":  "668",
+        "name":  "integrated plans",
+        "email":  "integrated@test.com",
+        "role":  "contractor",
+        "since":  "05 Jul 26"
+    },
+    {
+        "remoteId":  "661",
+        "name":  "ismail",
+        "email":  "ismail2@test.com",
+        "role":  "contractor",
+        "since":  "04 Jun 26"
+    },
+    {
+        "remoteId":  "646",
+        "name":  "DREAM VILLA",
+        "email":  "none@gmail.com",
+        "role":  "contractor",
+        "since":  "10 Jan 26"
+    },
+    {
+        "remoteId":  "656",
+        "name":  "ahmed",
+        "email":  "asffghj@test.com",
+        "role":  "supervisor",
+        "since":  "01 Jun 26"
+    },
+    {
+        "remoteId":  "653",
+        "name":  "jothis",
+        "email":  "jothis@test.com",
+        "role":  "supervisor",
+        "since":  "31 May 26"
+    },
+    {
+        "remoteId":  "665",
+        "name":  "rajesh",
+        "email":  "rajesh@test.com",
+        "role":  "supervisor",
+        "since":  "16 Jun 26"
+    },
+    {
+        "remoteId":  "663",
+        "name":  "sterr",
+        "email":  "sterr@test.com",
+        "role":  "supervisor",
+        "since":  "09 Jun 26"
+    }
+]

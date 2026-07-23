@@ -1,0 +1,51 @@
+﻿[
+    {
+        "name":  "Earthwork Excavation",
+        "remoteId":  46,
+        "items":  [
+                      "Approved drawings available at site",
+                      "Benchmarks and reference levels identified",
+                      "Excavation depth as per approved drawings",
+                      "Excavation width and length as per foundation size",
+                      "Excavation sides stable (no loose soil)",
+                      "Bottom level properly trimmed and leveled",
+                      "Formation level approved before PCC",
+                      "Work ready for next activity (PCC / footing works)"
+                  ]
+    },
+    {
+        "name":  "Foundation steel fabrication and formwork",
+        "remoteId":  47,
+        "items":  [
+                      "Approved drawings available at site"
+                  ]
+    },
+    {
+        "name":  "Ground floor columns",
+        "remoteId":  48,
+        "items":  [
+                      "Approved drawings available at site"
+                  ]
+    },
+    {
+        "name":  "Plinth beams",
+        "remoteId":  49,
+        "items":  [
+
+                  ]
+    },
+    {
+        "name":  "gf slab",
+        "remoteId":  50,
+        "items":  [
+
+                  ]
+    },
+    {
+        "name":  "FF slab",
+        "remoteId":  51,
+        "items":  [
+
+                  ]
+    }
+]

@@ -1,33 +1,40 @@
-# constructa
+# Bonyan Construction Portal
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [v0](https://v0.app).
+Next.js supervision portal (projects, inspections, NCRs, defects, daily reports, users, settings, import/export) with data migrated from the legacy Bonyan site.
 
-## Built with v0
-
-This repository is linked to a [v0](https://v0.app) project. You can continue developing by visiting the link below -- start new chats to make changes, and v0 will push commits directly to this repo. Every merge to `main` will automatically deploy.
-
-[Continue working on v0 →](https://v0.app/chat/projects/prj_HYfEzs8HFNaeQOOdSodbU3tAa4nR)
-
-## Getting Started
-
-First, run the development server:
+## Quick start (local)
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
+cp .env.example .env.local
+# set DATABASE_URL to your Postgres instance
+pnpm db:restore -- --yes
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deploy to Vercel with legacy data
 
-## Learn More
+See **[DEPLOY.md](./DEPLOY.md)** for the full checklist:
 
-To learn more, take a look at the following resources:
+1. Create Neon / Vercel Postgres
+2. Run `pnpm db:restore -- --yes` against that database
+3. Set `DATABASE_URL`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` in Vercel
+4. Deploy from GitHub (`Mmrz108/constructa`)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [v0 Documentation](https://v0.app/docs) - learn about v0 and how to use it.
+## Demo logins (after restore)
+
+| Email | Password | Role |
+|-------|----------|------|
+| `admin@test.com` | `Bonyan123!` | Admin (legacy) |
+| `admin@bonyan.test` | `Test1234!` | Admin (demo) |
+| other `*@bonyan.test` | `Test1234!` | per role |
+| imported legacy users | `Bonyan123!` | client / contractor / supervisor |
+
+## Stack
+
+- Next.js 16 + React 19
+- Better Auth
+- Drizzle ORM + Postgres
+- EN / AR locale switcher

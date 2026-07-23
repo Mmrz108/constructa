@@ -179,15 +179,20 @@ export const ncr = pgTable("ncr", {
   id: serial("id").primaryKey(),
   orgId: integer("orgId").notNull(),
   projectId: integer("projectId").notNull(),
+  stageId: integer("stageId"), // checklist_template id
   userId: text("userId").notNull(),
   inspectionId: integer("inspectionId"),
   number: text("number"),
   title: text("title").notNull(),
   description: text("description"),
+  violatedStandard: text("violatedStandard"),
+  location: text("location"),
   severity: text("severity").notNull().default("minor"),
+  priority: text("priority").notNull().default("medium"),
   status: text("status").notNull().default("open"),
   assignedTo: text("assignedTo"),
   dueDate: date("dueDate"),
+  attachments: jsonb("attachments").notNull().default([]),
   createdAt: timestamp("createdAt").notNull().defaultNow(),
   updatedAt: timestamp("updatedAt").notNull().defaultNow(),
 })
@@ -196,14 +201,20 @@ export const defect = pgTable("defect", {
   id: serial("id").primaryKey(),
   orgId: integer("orgId").notNull(),
   projectId: integer("projectId").notNull(),
+  stageId: integer("stageId"),
   userId: text("userId").notNull(),
   title: text("title").notNull(),
   description: text("description"),
   location: text("location"),
+  category: text("category"),
   trade: text("trade"),
   status: text("status").notNull().default("open"),
   priority: text("priority").notNull().default("medium"),
   assignedTo: text("assignedTo"),
+  beforePhotoUrls: jsonb("beforePhotoUrls").notNull().default([]),
+  afterPhotoUrls: jsonb("afterPhotoUrls").notNull().default([]),
+  closeApprovedBy: text("closeApprovedBy"),
+  closeApprovedAt: timestamp("closeApprovedAt"),
   createdAt: timestamp("createdAt").notNull().defaultNow(),
 })
 
@@ -211,13 +222,31 @@ export const dailyReport = pgTable("daily_report", {
   id: serial("id").primaryKey(),
   orgId: integer("orgId").notNull(),
   projectId: integer("projectId").notNull(),
+  stageId: integer("stageId"),
   userId: text("userId").notNull(),
   reportDate: date("reportDate").notNull(),
   weather: text("weather"),
   manpower: integer("manpower"),
   summary: text("summary"),
   workDone: text("workDone"),
-  status: text("status").notNull().default("draft"),
+  tomorrowPlan: text("tomorrowPlan"),
+  equipment: text("equipment"),
+  problemsRisks: text("problemsRisks"),
+  incidents: text("incidents"),
+  photoUrls: jsonb("photoUrls").notNull().default([]),
+  supervisorSignature: text("supervisorSignature"),
+  signedAt: timestamp("signedAt"),
+  status: text("status").notNull().default("draft"), // draft | submitted | closed
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+})
+
+/** Per-project role assignment — a user can belong to many projects. */
+export const projectMembership = pgTable("project_membership", {
+  id: serial("id").primaryKey(),
+  orgId: integer("orgId").notNull(),
+  projectId: integer("projectId").notNull(),
+  userId: text("userId").notNull(),
+  role: text("role").notNull().default("supervisor"),
   createdAt: timestamp("createdAt").notNull().defaultNow(),
 })
 
@@ -267,5 +296,102 @@ export const emailMessage = pgTable("email_message", {
   recipient: text("recipient"),
   body: text("body"),
   status: text("status").notNull().default("draft"),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+})
+
+/** Request for Information (RFI). */
+export const rfi = pgTable("rfi", {
+  id: serial("id").primaryKey(),
+  orgId: integer("orgId").notNull(),
+  projectId: integer("projectId").notNull(),
+  stageId: integer("stageId"),
+  userId: text("userId").notNull(),
+  number: text("number"),
+  title: text("title").notNull(),
+  description: text("description"),
+  status: text("status").notNull().default("open"),
+  priority: text("priority").notNull().default("medium"),
+  assignedTo: text("assignedTo"),
+  dueDate: date("dueDate"),
+  attachments: jsonb("attachments").notNull().default([]),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+})
+
+/** Variation Order (VO). */
+export const variationOrder = pgTable("variation_order", {
+  id: serial("id").primaryKey(),
+  orgId: integer("orgId").notNull(),
+  projectId: integer("projectId").notNull(),
+  userId: text("userId").notNull(),
+  number: text("number"),
+  title: text("title").notNull(),
+  description: text("description"),
+  amount: text("amount"),
+  status: text("status").notNull().default("draft"),
+  attachments: jsonb("attachments").notNull().default([]),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+})
+
+/** Interim Payment Certificate (IPC). */
+export const ipc = pgTable("ipc", {
+  id: serial("id").primaryKey(),
+  orgId: integer("orgId").notNull(),
+  projectId: integer("projectId").notNull(),
+  userId: text("userId").notNull(),
+  number: text("number"),
+  title: text("title").notNull(),
+  periodFrom: date("periodFrom"),
+  periodTo: date("periodTo"),
+  amount: text("amount"),
+  status: text("status").notNull().default("draft"),
+  attachments: jsonb("attachments").notNull().default([]),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+})
+
+/**
+ * Central organization settings hub (JSON document per org).
+ * Modules should read defaults / permissions / branding from here.
+ */
+export const orgSettings = pgTable("org_settings", {
+  orgId: integer("orgId").primaryKey(),
+  data: jsonb("data").notNull().default({}),
+  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+  updatedBy: text("updatedBy"),
+})
+
+/** Administrative / security audit trail. */
+export const auditLog = pgTable("audit_log", {
+  id: serial("id").primaryKey(),
+  orgId: integer("orgId").notNull(),
+  userId: text("userId"),
+  action: text("action").notNull(),
+  module: text("module").notNull(),
+  entityType: text("entityType"),
+  entityId: text("entityId"),
+  summary: text("summary"),
+  meta: jsonb("meta").notNull().default({}),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+})
+
+/**
+ * Audit log for admin Import / Export jobs.
+ * Stores a full report of imported / skipped / failed rows.
+ */
+export const dataTransferJob = pgTable("data_transfer_job", {
+  id: serial("id").primaryKey(),
+  orgId: integer("orgId").notNull(),
+  userId: text("userId").notNull(),
+  direction: text("direction").notNull(), // import | export
+  entity: text("entity").notNull(),
+  source: text("source").notNull().default("file"), // file | api
+  fileName: text("fileName"),
+  status: text("status").notNull().default("completed"), // completed | failed | partial
+  importedCount: integer("importedCount").notNull().default(0),
+  skippedCount: integer("skippedCount").notNull().default(0),
+  errorCount: integer("errorCount").notNull().default(0),
+  report: jsonb("report").notNull().default({}),
   createdAt: timestamp("createdAt").notNull().defaultNow(),
 })
